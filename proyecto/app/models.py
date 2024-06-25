@@ -12,7 +12,7 @@ class transfer(models.Model):
     capacidad = models.IntegerField()
     disponible = models.BooleanField(default=True)
     empresa = models.ForeignKey('EmpresaTransfer', on_delete=models.CASCADE)
-    conductor = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    conductor = models.ForeignKey('chofer', on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return f"{self.marca} {self.modelo} ({self.patente})"
@@ -26,7 +26,7 @@ class EmpresaTransfer(models.Model):
     transfers = models.IntegerField(default=0, editable=False) 
 
     def __str__(self):
-        return self.name
+        return self.nombre
     
 
 class Chofer(models.Model):

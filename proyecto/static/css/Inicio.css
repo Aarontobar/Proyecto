@@ -54,20 +54,20 @@ h1, h3 {
 
 .text-overlay .card {
     background-color: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(4px); /* Aplica el efecto de desenfoque */
-    border-radius: 10px; /* Añade bordes redondeados */
-    padding: 10px; /* Ajusta el espaciado interior */
-    color: #000000; /* Cambia el color del texto */
-    text-align: center; /* Alinea el texto al centro */
+    backdrop-filter: blur(4px); 
+    border-radius: 10px;
+    padding: 10px; 
+    color: #000000; 
+    text-align: center; 
 }
 
 .text-overlay .card-title {
-    margin-bottom: 5px; /* Espaciado inferior para el título */
-    font-weight: bold; /* Estilo negrita para el título */
+    margin-bottom: 5px;
+    font-weight: bold;
 }
 
 .text-overlay .card-text {
-    font-size: 18px; /* Tamaño de fuente más grande para el texto */
+    font-size: 18px; 
 }
 
 .container-fluid {
@@ -75,15 +75,15 @@ h1, h3 {
 }
 
 .btn-custom {
-    background-color: rgba(200, 200, 200, 0.5); /* Color gris claro semi-transparente */
-    color: #000000; /* Color del texto */
-    border: 1px solid #000000; /* Borde negro de 1px */
-    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease; /* Transiciones suaves */
+    background-color: rgba(200, 200, 200, 0.5); 
+    color: #000000;
+    border: 1px solid #000000; 
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
 }
 
 .btn-custom:hover,
 .btn-custom:focus {
-    background-color: rgba(200, 200, 200, 0.8); /* Color gris claro semi-transparente más oscuro al pasar el cursor */
-    border-color: #000000; /* Cambia el color del borde al pasar el cursor */
-    color: #000000; /* Cambia el color del texto al pasar el cursor */
+    background-color: rgba(200, 200, 200, 0.8); 
+    border-color: #000000;
+    color: #000000;
 }

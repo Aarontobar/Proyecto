@@ -14,3 +14,6 @@ def inicio(request):
     }
 
     return render(request, 'inicio.html', context)
+
+def catalogo(request):
+    return render(request, 'catalogo.html')

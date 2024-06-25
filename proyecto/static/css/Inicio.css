@@ -1,0 +1,9 @@
+.cuadro {
+    background-color: rgba(255, 255, 255, 0.8); /* Color de fondo con transparencia */
+    border: 1px solid #000; /* Borde negro */
+    border-radius: 10px; /* Bordes redondeados */
+    padding: 20px; /* Espacio interno */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Sombra con efecto de blur */
+    margin-bottom: 20px; /* Margen inferior */
+    width: 300px; /* Ancho del cuadro */
+}

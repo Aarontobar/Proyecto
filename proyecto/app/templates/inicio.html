@@ -4,36 +4,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Proyecto Django</title>
+    <title>Inicio</title>
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/inicio.css' %}">
 </head>
 <body>
     <div class="container">
-        <h1>Bienvenido a mi proyecto Django con Bootstrap</h1>
+        <h1>Bienvenido al sistema de reserva de transfer</h1>
     </div>
-    <div class="container">
-        <div id="carouselExample" class="carousel slide" data-ride="carousel">
-            <div class="carousel-inner">
-                <div class="carousel-item active">
-                    <img src="{% static 'img/slide1.jpg' %}" class="d-block w-100" alt="First slide">
-                </div>
-                <div class="carousel-item">
-                    <img src="{% static 'img/slide2.jpg' %}" class="d-block w-100" alt="Second slide">
-                </div>
-                <div class="carousel-item">
-                    <img src="{% static 'img/slide3.jpg' %}" class="d-block w-100" alt="Third slide">
-                </div>
-            </div>
-            <a class="carousel-control-prev" href="#carouselExample" role="button" data-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="sr-only">Previous</span>
-            </a>
-            <a class="carousel-control-next" href="#carouselExample" role="button" data-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="sr-only">Next</span>
-            </a>
-        </div>
+
+    <div class="cuadro">
+        <h2>Transfers Disponibles</h2>
+        <p>{{ transfers_disponibles }}</p>
     </div>
+
+    <div class="cuadro">
+        <h2>Viajes Realizados</h2>
+        <p>{{ viajes_realizados }}</p>
+    </div>
+    
+
 
     <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
 </body>

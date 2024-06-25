@@ -3,7 +3,14 @@ body, html {
     margin: 0;
 }
 
-h1, p {
+@media (max-width: 767.98px) {
+    .btn-block {
+        display: block;
+        width: 100%;
+    }
+}
+
+h1, h3 {
     font-family: "Raleway", sans-serif;
     font-optical-sizing: auto;
     font-weight: 550;
@@ -46,7 +53,7 @@ h1, p {
 }
 
 .text-overlay .card {
-    background-color: rgba(255, 255, 255, 0.7);
+    background-color: rgba(255, 255, 255, 0.2);
     backdrop-filter: blur(4px); /* Aplica el efecto de desenfoque */
     border-radius: 10px; /* Añade bordes redondeados */
     padding: 10px; /* Ajusta el espaciado interior */
@@ -67,3 +74,16 @@ h1, p {
     padding: 0; 
 }
 
+.btn-custom {
+    background-color: rgba(200, 200, 200, 0.5); /* Color gris claro semi-transparente */
+    color: #000000; /* Color del texto */
+    border: 1px solid #000000; /* Borde negro de 1px */
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease; /* Transiciones suaves */
+}
+
+.btn-custom:hover,
+.btn-custom:focus {
+    background-color: rgba(200, 200, 200, 0.8); /* Color gris claro semi-transparente más oscuro al pasar el cursor */
+    border-color: #000000; /* Cambia el color del borde al pasar el cursor */
+    color: #000000; /* Cambia el color del texto al pasar el cursor */
+}

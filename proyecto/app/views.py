@@ -16,5 +16,5 @@ def inicio(request):
     return render(request, 'inicio.html', context)
 
 def catalogo(request):
-    transfers = transfer.objects.all()[:3] 
+    transfers = transfer.objects.filter(disponible=True)[:3] 
     return render(request, 'catalogo.html', {'transfers': transfers})

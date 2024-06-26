@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'css/catalogo.css' %}">
+    <link rel="stylesheet" href="{% static 'css/transfers.css' %}">
 </head>
 <body>
     <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
@@ -28,6 +28,34 @@
 
     <div class="custom-square">
         <h1>Transfers Disponibles</h1>
+
+        <div class="dropdown">
+            <button class="dropbtn">Filtrar</button>
+            <div class="dropdown-content">
+                <form id="filter-form" action="{% url 'transfers' %}" method="GET">
+                    <label for="marca">Marca:</label>
+                    <select id="marca" name="marca">
+                        <option value="">Seleccionar</option>
+                        {% for marca in marcas %}
+                            <option value="{{ marca }}" {% if request.GET.marca == marca %}selected{% endif %}>{{ marca }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <label for="modelo">Modelo:</label>
+                    <select id="modelo" name="modelo">
+                        <option value="">Seleccionar</option>
+                        {% for modelo in modelos %}
+                            <option value="{{ modelo }}" {% if request.GET.modelo == modelo %}selected{% endif %}>{{ modelo }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <label for="capacidad">Capacidad mínima:</label>
+                    <input type="number" id="capacidad" name="capacidad" min="1" value="{{ request.GET.capacidad }}">
+
+                    <button type="submit">Aplicar Filtro</button>
+                </form>
+            </div>
+        </div>
         
         <div class="transfers-container">
             {% for transfer in transfers %}
@@ -41,27 +69,16 @@
                     <p>Conductor: {{ transfer.conductor }}</p>
                 </div>
 
-                <button class="reservar_btn" onclick="showReservationForm(event, '{{ transfer.patente}}')">Reservar</button>
+                <button class="reservar_btn">Reservar</button>
                 <button class="mas_info_btn">Ver más</button>
             </div>
+            {% empty %}
+                <p>No se encontraron transfers que coincidan con los filtros.</p>
             {% endfor %}
-            <a href="{% url 'transfers' %}" class="ver_mas"><samp>+</samp></a>
-        </div>
-
-        <div id="reservation-form-container" style="display: none;">
-            <form id="reservation-form" action="#" method="post">
-                {% csrf_token %}
-                <input type="hidden" id="transfer-patente" name="transfer_patente">
-                <label for="nombre">Nombre:</label>
-                <input type="text" id="nombre" name="nombre" required>
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" required>
-                <input type="submit" value="Confirmar Reserva">
-            </form>
         </div>
     </div>
     
     <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
-    <script src="{% static 'js/catalogo.js' %}"></script>
+    <script src="{% static 'js/transfer.js' %}"></script>
 </body>
 </html>

@@ -41,15 +41,21 @@
             {% for transfer in transfers %}
             <div class="transfer-card">
                 <img src="{{ transfer.foto.url }}" alt="Foto del Transfer">
-                <p>{{transfer.foto.url}}</p>
                 <p>{{ transfer.marca }} {{ transfer.modelo }}</p>
                 <p>Capacidad: {{ transfer.capacidad }}</p>
 
+                <div class="mas_info">
+                    <p>Empresa: {{ transfer.empresa }}</p>
+                    <p>Conductor: {{ transfer.conductor }}</p>
+                    <p>Disponible: {% if transfer.disponible %} Sí {% else %} No {% endif %}</p>
+                </div>
+
                 <form action="#" method="post">
                     {% csrf_token %}
-
-                    <input type="submit" value="Reservar">
+                    <input type="submit" class="reservar_btn" value="Reservar">
                 </form>
+
+                <button class="mas_info_btn">Ver más</button>
             </div>
             {% endfor %}
             <a href="" class="ver_mas"><samp>+</samp></a>
@@ -57,5 +63,6 @@
     </div>
     
     <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'js/catalogo.js' %}"></script>
 </body>
 </html>

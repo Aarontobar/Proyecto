@@ -13,7 +13,7 @@ class transfer(models.Model):
     disponible = models.BooleanField(default=True)
     empresa = models.ForeignKey('EmpresaTransfer', on_delete=models.CASCADE)
     conductor = models.ForeignKey('chofer', on_delete=models.SET_NULL, null=True, blank=True)
-    foto = models.ImageField(upload_to='img/', null=True, blank=True)
+    foto = models.ImageField(upload_to='static/img/', null=True, blank=True)
 
     def __str__(self):
         return f"{self.marca} {self.modelo} ({self.patente})"

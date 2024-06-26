@@ -36,9 +36,12 @@
 
     <div class="custom-square">
         <h1>Transfers Disponibles</h1>
+        
         <div class="transfers-container">
             {% for transfer in transfers %}
             <div class="transfer-card">
+                <img src="{{ transfer.foto.url }}" alt="Foto del Transfer">
+                <p>{{transfer.foto.url}}</p>
                 <p>{{ transfer.marca }} {{ transfer.modelo }}</p>
                 <p>Capacidad: {{ transfer.capacidad }}</p>
 

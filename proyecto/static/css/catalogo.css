@@ -40,6 +40,7 @@ h1, h3 {
 }
 
 .custom-square {
+    margin-left: 10px;
     position: fixed;
     top: 20px;
     right: 20px;
@@ -102,4 +103,8 @@ h1, h3 {
 
 .ver_mas:hover {
     background-color: #0056b3;
+}
+
+.custom-square h1 {
+    margin-top: 10px; /* Ajusta el margen superior según sea necesario */
 }

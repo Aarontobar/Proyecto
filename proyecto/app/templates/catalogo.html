@@ -34,7 +34,24 @@
         </button>
     </div>
 
-    <div class="custom-square"></div>
+    <div class="custom-square">
+        <h1>Transfers Disponibles</h1>
+        <div class="transfers-container">
+            {% for transfer in transfers %}
+            <div class="transfer-card">
+                <p>{{ transfer.marca }} {{ transfer.modelo }}</p>
+                <p>Capacidad: {{ transfer.capacidad }}</p>
+
+                <form action="#" method="post">
+                    {% csrf_token %}
+
+                    <input type="submit" value="Reservar">
+                </form>
+            </div>
+            {% endfor %}
+            <a href="" class="ver_mas"><samp>+</samp></a>
+        </div>
+    </div>
     
     <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
 </body>

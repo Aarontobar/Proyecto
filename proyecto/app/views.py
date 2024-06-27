@@ -3,6 +3,9 @@ from .models import transfer, Reserva, Cliente
 from datetime import datetime
 from django.urls import reverse
 import logging
+from django.contrib.auth import authenticate, login
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 
 
 logger = logging.getLogger(__name__)
@@ -82,3 +85,26 @@ def reserva(request, reserva_id):
     reserva = get_object_or_404(Reserva, id_reserva=reserva_id)
     chofer_del_transfer = reserva.transfer_utilizado.conductor
     return render(request, 'reserva.html', {'reserva': reserva, 'chofer_del_transfer': chofer_del_transfer})
+
+def login_user(request):
+    if request.method == 'POST':
+        print("DEBUG: POST request received")
+        
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        print(f"DEBUG: Username: {username}, Password: {password}")
+        
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            print("DEBUG: Authentication successful")
+            login(request, user)
+            return redirect('administrar')  # Redirige a la página de dashboard o donde sea necesario
+        else:
+            print("DEBUG: Authentication failed")
+            messages.error(request, 'Credenciales inválidas. Por favor, inténtelo de nuevo.')
+    
+    return render(request, 'login.html')
+
+@login_required
+def administrar(request):
+    return render(request, 'administrar.html')

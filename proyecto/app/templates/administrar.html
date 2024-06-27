@@ -1,0 +1,131 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/catalogo.css' %}">
+</head>
+<body>
+    <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img src="{% static 'img/slide1.jpg' %}" class="d-block w-100" alt="...">
+            </div>
+            <div class="carousel-item">
+                <img src="{% static 'img/slide2.jpg' %}" class="d-block w-100" alt="...">
+            </div>
+            <div class="carousel-item">
+                <img src="{% static 'img/slide3.jpg' %}" class="d-block w-100" alt="...">
+            </div>
+        </div>
+    </div>
+
+    <div class="custom-square">
+        <h1>Transfers Disponibles</h1>
+        
+        <div class="transfers-container">
+            {% for transfer in transfers %}
+            <div class="transfer-card">
+                {% if transfer.foto %}
+                <img src="{{ transfer.foto.url }}" alt="Foto del transfer">
+                {% else %}
+                <p>No hay foto disponible para este transfer.</p>
+                {% endif %}
+                <p>{{ transfer.marca }} {{ transfer.modelo }}</p>
+
+                <div class="mas_info">
+                    <p>Capacidad: {{ transfer.capacidad }}</p>
+                    <p>Empresa: {{ transfer.empresa }}</p>
+                    <p>Conductor: {{ transfer.conductor }}</p>
+                </div>
+
+                <button class="reservar_btn" onclick="showReservationForm(event, '{{ transfer.patente}}')">Reservar</button>
+                <button class="mas_info_btn">Ver más</button>
+            </div>
+            {% endfor %}
+            <a href="{% url 'transfers' %}" class="ver_mas"><samp>+</samp></a>
+        </div>
+
+        <div id="reservation-form-container" style="display: none;">
+            <form id="reservation-form" action="{% url 'procesar_reserva' %}" method="post" class="reservation-form">
+                <p>ingrese su informacion para completar la reserva</p>
+                {% csrf_token %}
+                <input type="hidden" name="transfer_id" id="transfer-patente" value="{{ reserva_transfer_id }}">
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="nombre">Nombre:</label>
+                            <input type="text" id="nombre" name="nombre" class="form-control form-control-sm" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="rut">RUT:</label>
+                            <input type="text" id="rut" name="rut" class="form-control form-control-sm" required>
+                        </div>
+                    </div>
+                </div>
+        
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="correo">Correo:</label>
+                            <input type="email" id="correo" name="correo" class="form-control form-control-sm" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="telefono">Teléfono:</label>
+                            <input type="text" id="telefono" name="telefono" class="form-control form-control-sm" required>
+                        </div>
+                    </div>
+                </div>
+        
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="fecha">Fecha de Reserva:</label>
+                            <input type="date" id="fecha" name="fecha" class="form-control form-control-sm" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="hora">Hora de Reserva:</label>
+                            <input type="time" id="hora" name="hora" class="form-control form-control-sm" required>
+                        </div>
+                    </div>
+                </div>
+        
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="destino">Destino:</label>
+                            <input type="text" id="destino" name="destino" class="form-control form-control-sm" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="cantidad_asientos">Cantidad de Asientos:</label>
+                            <input type="number" id="cantidad_asientos" name="cantidad_asientos" class="form-control form-control-sm" required>
+                        </div>
+                    </div>
+                </div>
+
+                
+
+                <input type="submit" value="Confirmar Reserva">
+            </form>
+        </div>
+    </div>
+    
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'js/catalogo.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,95 @@
+body, html {
+    height: 100%;
+    margin: 0;
+}
+
+@media (max-width: 767.98px) {
+    .btn-block {
+        display: block;
+        width: 100%;
+    }
+}
+
+h1, h3 {
+    font-family: "Raleway", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 550;
+    font-style: normal;
+  }
+
+#carouselExampleIndicators {
+    width: 100%;
+    height: 100vh; 
+    overflow: auto; 
+    position: relative;
+}
+
+.carousel-inner {
+    width: 100%; 
+    height: 100%; 
+}
+
+.carousel-item {
+    height: 100%; 
+}
+
+.carousel-item img {
+    width: 100%;
+    height: 100%; 
+    object-fit: cover; 
+}
+
+.custom-square {
+    margin-left: 10px;
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: calc(65% - 40px);
+    height: calc(75vh - 40px);
+    background-color: rgba(200, 200, 200, 0.5);
+    border-radius: 15px;
+    box-sizing: border-box;
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+    overflow-y: auto;
+
+    @media (max-width: 768px) {
+        width: 100%;
+        height: 100%;
+        top: 0;
+        right: 0;
+    }
+}
+
+
+.custom-square h1 {
+    margin-top: 10px; 
+}
+
+.form-group {
+    margin-bottom: 1rem; /* Espacio entre grupos de campos */
+}
+
+.form-group label {
+    display: block; /* Mostrar etiquetas como bloques (encima de los inputs) */
+    margin-bottom: 0.5rem; /* Espacio entre etiqueta y campo */
+}
+
+.form-control {
+    width: 100%; /* Ancho completo para los inputs */
+    padding: 0.5rem; /* Espaciado interno */
+    font-size: 1rem; /* Tamaño de fuente */
+    background-color: rgba(0, 0, 0, 0.379); /* Color de fondo */
+    border: 1px solid #ccc; /* Borde del input */
+    border-radius: 4px; /* Bordes redondeados */
+    box-sizing: border-box; /* Ajuste del modelo de caja */
+}
+
+.reservation-form {
+    max-width: 800px; /* Ancho máximo del formulario */
+    margin: 0 auto; /* Centrar horizontalmente el formulario */
+    padding: 1.5rem; /* Espaciado interno del formulario */
+    border-radius: 8px; /* Bordes redondeados del formulario */
+    margin-top: 2rem; /* Espacio superior */
+    margin-bottom: 2rem; /* Espacio inferior */
+}

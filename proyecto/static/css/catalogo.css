@@ -72,11 +72,12 @@ h1, h3 {
     border-radius: 15px;
     overflow-x: auto;
     box-sizing: border-box; 
+    margin:10px;
 }
 
 .transfer-card {
     position: relative;
-    flex: 0 1 calc(30.33% - 20px); 
+    flex: 0 1 calc(33.33% - 20px); 
     max-width: calc(33.33% - 20px); 
     min-width: 200px;
     background-color: rgba(0, 0, 0, 0.379);;
@@ -179,4 +180,32 @@ h1, h3 {
 
 .ver_mas:hover {
     background-color: rgba(223, 160, 160, 0.262);;
+}
+
+.form-group {
+    margin-bottom: 1rem; 
+}
+
+.form-group label {
+    display: block; 
+    margin-bottom: 0.5rem; 
+}
+
+.form-control {
+    width: 100%; 
+    padding: 0.5rem; 
+    font-size: 1rem; 
+    background-color: rgba(0, 0, 0, 0.379);;
+    border: 1px solid #ccc; 
+    border-radius: 4px; 
+    box-sizing: border-box; 
+}
+
+.reservation-form {
+    max-width: 800px; 
+    margin: 0 auto; 
+    padding: 1.5rem;
+    border-radius: 8px; 
+    margin-top: 2rem;
+    margin-bottom: 2rem; 
 }

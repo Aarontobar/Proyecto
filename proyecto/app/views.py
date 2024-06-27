@@ -80,4 +80,5 @@ def procesar_reserva(request):
 
 def reserva(request, reserva_id):
     reserva = get_object_or_404(Reserva, id_reserva=reserva_id)
-    return render(request, 'reserva.html', {'reserva': reserva})
+    chofer_del_transfer = reserva.transfer_utilizado.conductor
+    return render(request, 'reserva.html', {'reserva': reserva, 'chofer_del_transfer': chofer_del_transfer})

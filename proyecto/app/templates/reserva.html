@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'css/catalogo.css' %}">
+    <link rel="stylesheet" href="{% static 'css/reserva.css' %}">
 </head>
 <body>
     <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
@@ -27,15 +27,24 @@
     </div>
 
     <div class="custom-square">
-        <h1>Transfers Disponibles</h1>
+        <h1>Detalles de la Reserva</h1>
 
-        <p>Reserva ID: {{ reserva.id_reserva }}</p>
-        <p>Transfer Utilizado: {{ reserva.transfer_utilizado }}</p>
-        <p>Cliente: {{ reserva.cliente_rut.nombre }}</p>
-        <p>Fecha de Realización: {{ reserva.fecha_realizacion }}</p>
-        <p>Hora de Realización: {{ reserva.hora_realizacion }}</p>
-        <p>Destino: {{ reserva.destino }}</p>
-        <p>Cantidad de Asientos: {{ reserva.cantidad_asientos }}</p>
+        <div class="reserva-details">
+            <p><strong>Reserva ID:</strong> {{ reserva.id_reserva }}</p>
+            <p><strong>Transfer Utilizado:</strong> {{ reserva.transfer_utilizado }}</p>
+            <p><strong>Cliente:</strong> {{ reserva.cliente_rut.nombre }}</p>
+            <p><strong>Fecha de Realización:</strong> {{ reserva.fecha_realizacion }}</p>
+            <p><strong>Hora de Realización:</strong> {{ reserva.hora_realizacion }}</p>
+            <p><strong>Destino:</strong> {{ reserva.destino }}</p>
+            <p><strong>Cantidad de Asientos:</strong> {{ reserva.cantidad_asientos }}</p>
+            <p><strong>chofer</strong>{{ chofer_del_transfer.nombre }} {{chofer_del_transfer.apellido}}</p>
+        </div>
+
+        <div class="row justify-content-center mt-3 mb-5">
+            <div class="col-lg-6 col-12">
+                <a href="{% url 'inicio' %}" class="btn btn-custom btn-lg btn-block">Reservar</a>
+            </div>
+        </div>
     </div>
     
     <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>

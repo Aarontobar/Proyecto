@@ -28,6 +28,25 @@
 
     <div class="custom-square">
         <h1>Transfers Disponibles</h1>
+
+        <form method="get">
+            <label for="zona">Zona:</label>
+            <select name="zona" id="zona" onchange="this.form.submit()">
+                <option value="">Selecciona una zona</option>
+                {% for zona in zonas %}
+                    <option value="{{ zona }}" {% if zona == selected_zona %}selected{% endif %}>{{ zona }}</option>
+                {% endfor %}
+            </select>
+        
+            <label for="comuna">Comuna:</label>
+            <select name="comuna" id="comuna" onchange="this.form.submit()">
+                <option value="">Selecciona una comuna</option>
+                {% for comuna in comunas %}
+                    <option value="{{ comuna }}" {% if comuna == selected_comuna %}selected{% endif %}>{{ comuna }}</option>
+                {% endfor %}
+            </select>
+        
+        </form>
         
         <div class="transfers-container">
             {% for transfer in transfers %}
@@ -37,7 +56,8 @@
                 {% else %}
                 <p>No hay foto disponible para este transfer.</p>
                 {% endif %}
-                <p>{{ transfer.marca }} {{ transfer.modelo }}</p>
+                <p> Marca: {{ transfer.marca }} Modelo: {{ transfer.modelo }}</p>
+                <p> zona: {{ transfer.destino.zona}} comuna: {{transfer.destino.comuna}}</p>
 
                 <div class="mas_info">
                     <p>Capacidad: {{ transfer.capacidad }}</p>
@@ -86,30 +106,8 @@
                             <input type="text" id="telefono" name="telefono" class="form-control form-control-sm" required>
                         </div>
                     </div>
-                </div>
-        
+                </div>    
                 <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="fecha">Fecha de Reserva:</label>
-                            <input type="date" id="fecha" name="fecha" class="form-control form-control-sm" required>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="hora">Hora de Reserva:</label>
-                            <input type="time" id="hora" name="hora" class="form-control form-control-sm" required>
-                        </div>
-                    </div>
-                </div>
-        
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="destino">Destino:</label>
-                            <input type="text" id="destino" name="destino" class="form-control form-control-sm" required>
-                        </div>
-                    </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="cantidad_asientos">Cantidad de Asientos:</label>

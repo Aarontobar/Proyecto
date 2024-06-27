@@ -33,7 +33,7 @@
             <div class="filtrar-content">
                 <form id="filter-form" action="{% url 'transfers' %}" method="GET">
                     <label for="marca">Marca:</label>
-                    <select id="marca" name="marca" class="form">
+                    <select id="marca" onchange="this.form.submit()" name="marca" class="form" >
                         <option value="">Seleccionar</option>
                         {% for marca in marcas %}
                             <option value="{{ marca }}" {% if request.GET.marca == marca %}selected{% endif %}>{{ marca }}</option>
@@ -41,7 +41,7 @@
                     </select>
 
                     <label for="modelo">Modelo:</label>
-                    <select id="modelo" name="modelo" class="form">
+                    <select id="modelo" name="modelo" onchange="this.form.submit()" class="form">
                         <option value="">Seleccionar</option>
                         {% for modelo in modelos %}
                             <option value="{{ modelo }}" {% if request.GET.modelo == modelo %}selected{% endif %}>{{ modelo }}</option>
@@ -49,9 +49,23 @@
                     </select>
 
                     <label for="capacidad">Capacidad mínima:</label>
-                    <input type="number" id="capacidad" name="capacidad" min="1" class="form" value="{{ request.GET.capacidad }}">
+                    <input type="number" id="capacidad" name="capacidad" min="1" class="form" onchange="this.form.submit()" value="{{ request.GET.capacidad }}">
 
-                    <button type="submit" class="boton">Aplicar Filtro</button>
+                    <label for="zona">Zona:</label>
+                    <select name="zona" id="zona" onchange="this.form.submit()" class="form">
+                        <option value="">Selecciona una zona</option>
+                        {% for zona in zonas %}
+                        <option value="{{ zona }}" {% if zona == selected_zona %}selected{% endif %}>{{ zona }}</option>
+                        {% endfor %}
+                    </select>
+        
+                    <label for="comuna">Comuna:</label>
+                    <select name="comuna" id="comuna" onchange="this.form.submit()" class="form">
+                        <option value="">Selecciona una comuna</option>
+                            {% for comuna in comunas %}
+                            <option value="{{ comuna }}" {% if comuna == selected_comuna %}selected{% endif %}>{{ comuna }}</option>
+                            {% endfor %}
+                    </select>
                 </form>
             </div>
         </div>
@@ -64,7 +78,9 @@
                 {% else %}
                 <p>No hay foto disponible para este transfer.</p>
                 {% endif %}
-                <p>{{ transfer.marca }} {{ transfer.modelo }}</p>
+                <p> Marca: {{ transfer.marca }} Modelo: {{ transfer.modelo }}</p>
+                <p> zona: {{ transfer.destino.zona}} comuna: {{transfer.destino.comuna}}</p>
+
 
                 <div class="mas_info">
                     <p>Capacidad: {{ transfer.capacidad }}</p>

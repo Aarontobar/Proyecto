@@ -5,6 +5,13 @@ from django.contrib.auth.models import AbstractUser
 
 # Create your models here.
 
+class destinos(models.Model):
+    zona = models.CharField(max_length=100)
+    comuna = models.CharField(max_length=100)
+
+    def __str__(self):
+        return f"{self.zona} - {self.comuna}"
+
 class transfer(models.Model):
     patente = models.CharField(max_length=20, primary_key=True)
     marca = models.CharField(max_length=100)
@@ -13,6 +20,7 @@ class transfer(models.Model):
     disponible = models.BooleanField(default=True)
     empresa = models.ForeignKey('EmpresaTransfer', on_delete=models.CASCADE)
     conductor = models.ForeignKey('chofer', on_delete=models.SET_NULL, null=True, blank=True)
+    destino = models.ForeignKey('Destinos', on_delete=models.SET_NULL, null=True, blank=True)
     foto = models.ImageField(upload_to='static/img/', null=True, blank=True)
 
     def __str__(self):
@@ -58,14 +66,15 @@ class Reserva(models.Model):
     cliente_rut = models.ForeignKey(Cliente, on_delete=models.CASCADE, null=True, blank=True)
     fecha_realizacion = models.DateField()
     hora_realizacion = models.TimeField()
-    destino = models.CharField(max_length=200)
+    zona = models.CharField(max_length=200, null=True, blank=True)
+    comuna = models.CharField(max_length=200, null=True, blank=True)
     cantidad_asientos = models.IntegerField()
 
     def __str__(self):
         if self.cliente_rut:
-            return f"Reserva #{self.id_reserva} - Cliente: {self.cliente_rut.nombre}, Destino: {self.destino}"
+            return f"Reserva #{self.id_reserva} - Cliente: {self.cliente_rut.nombre}, Destino: {self.comuna}"
         else:
-            return f"Reserva #{self.id_reserva} - Sin cliente, Destino: {self.destino}"
+            return f"Reserva #{self.id_reserva} - Sin cliente, Destino: {self.comuna}"
     
 class Usuarios(models.Model):
     ROL_CHOICES = (

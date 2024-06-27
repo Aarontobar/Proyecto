@@ -10,10 +10,63 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'proyecto.settings')
 django.setup()
 
 # Importa tus modelos de Django después de django.setup()
-from app.models import transfer, EmpresaTransfer, Chofer, Cliente, Reserva, Usuarios
+from app.models import transfer, EmpresaTransfer, Chofer, Cliente, Reserva, Usuarios, destinos
 
 
 fake = Faker()
+
+
+def crear_zonas_y_comunas():
+    zonas_comunas_santiago = [
+        ("Centro", "Santiago"),
+        ("Centro", "Providencia"),
+        ("Centro", "Las Condes"),
+        ("Centro", "Ñuñoa"),
+        ("Centro", "Vitacura"),
+        ("Centro", "La Reina"),
+        ("Centro", "Macul"),
+        ("Centro", "San Joaquín"),
+        ("Centro", "La Florida"),
+        ("Centro", "Peñalolén"),
+        ("Centro", "Lo Barnechea"),
+        ("Centro", "Renca"),
+        ("Centro", "Quilicura"),
+        ("Centro", "Huechuraba"),
+        ("Centro", "Recoleta"),
+        ("Centro", "Independencia"),
+        ("Centro", "Conchalí"),
+        ("Centro", "La Cisterna"),
+        ("Centro", "La Granja"),
+        ("Centro", "San Miguel"),
+        ("Centro", "Pedro Aguirre Cerda"),
+        ("Centro", "Lo Espejo"),
+        ("Centro", "Cerrillos"),
+        ("Centro", "Estación Central"),
+        ("Centro", "Quinta Normal"),
+        ("Centro", "Lo Prado"),
+        ("Centro", "Pudahuel"),
+        ("Centro", "Maipú"),
+        ("Sur", "La Pintana"),
+        ("Sur", "San Bernardo"),
+        ("Sur", "Pirque"),
+        ("Sur", "San Ramón"),
+        ("Sur", "El Bosque"),
+        ("Norte", "Colina"),
+        ("Norte", "Lampa"),
+        ("Oeste", "Puente Alto"),
+        ("Oeste", "Maipú"),
+        ("Oeste", "Cerrillos"),
+        ("Oeste", "Estación Central"),
+        ("Oeste", "San Bernardo"),
+        ("Oeste", "Pirque"),
+        ("Oeste", "La Pintana"),
+        ("Oeste", "San Ramón")
+    ]
+
+    for zona, comuna in zonas_comunas_santiago:
+        destinos.objects.get_or_create(zona=zona, comuna=comuna)
+
+crear_zonas_y_comunas()
 
 marcas_reales = ['Toyota', 'Honda', 'Ford', 'Chevrolet', 'Nissan']
 modelos_reales = ['SUV', 'Sedan', 'Minivan']
@@ -59,6 +112,9 @@ def crear_datos_de_prueba():
         clientes.append(cliente)
 
     # Crear transfers
+    destinos_disponibles = destinos.objects.all()
+
+    # Crear transfers
     transfers = []
     for _ in range(25):
         capacidad = random.randint(4, 10)
@@ -66,6 +122,10 @@ def crear_datos_de_prueba():
         patente = None
         while not patente or transfer.objects.filter(patente=patente).exists():
             patente = fake.random_uppercase_letter() * 4 + str(fake.random_int(min=10, max=99))  # Formato: AAAA99
+        
+        # Seleccionar un destino aleatorio para el transfer
+        destino_asignado = random.choice(destinos_disponibles) if destinos_disponibles else None
+
         transferencia = transfer.objects.create(
             patente=patente,
             marca=random.choice(['Toyota', 'Honda', 'Ford', 'Chevrolet', 'Nissan']),
@@ -73,7 +133,8 @@ def crear_datos_de_prueba():
             capacidad=capacidad,
             disponible=True,
             empresa=random.choice(empresas),
-            conductor=random.choice(choferes) if choferes else None
+            conductor=random.choice(choferes) if choferes else None,
+            destino=destino_asignado  # Asignar el destino seleccionado
         )
         transfers.append(transferencia)
 
@@ -81,35 +142,32 @@ def crear_datos_de_prueba():
 
 # Función para crear reservas
 def crear_reservas(empresas, choferes, clientes, transfers):
-    # Obtener listas de transfers y clientes
     transfers = list(transfer.objects.all())
     clientes = list(Cliente.objects.all())
 
     try:
         with transaction.atomic():
-            for _ in range(50):  # Intentaremos crear 50 reservas
-                # Seleccionar aleatoriamente transfer y cliente
+            for _ in range(50):
                 transfer_utilizado = random.choice(transfers)
                 cliente = random.choice(clientes)
                 
-                # Verificar si el transfer y el cliente existen en la base de datos
                 if not transfer_utilizado.pk or not cliente.pk:
                     print(f"No se puede crear reserva, transfer o cliente no encontrado en la base de datos.")
                     continue
 
-                # Verificar si el transfer tiene conductor asignado
                 if not transfer_utilizado.conductor:
                     print(f"No se puede crear reserva, el transfer {transfer_utilizado.patente} no tiene conductor asignado.")
                     continue
 
                 try:
-                    # Crear reserva
+                    destino = transfer_utilizado.destino
                     reserva = Reserva.objects.create(
                         transfer_utilizado=transfer_utilizado,
                         cliente_rut=cliente,
                         fecha_realizacion=fake.date_between(start_date='-1y', end_date='today'),
                         hora_realizacion=fake.time(),
-                        destino=fake.address()[:200],
+                        zona=destino.zona if destino else None,
+                        comuna=destino.comuna if destino else None,
                         cantidad_asientos=random.randint(1, 10)
                     )
                     print(f"Reserva creada correctamente: {reserva.id_reserva}")
@@ -122,7 +180,6 @@ def crear_reservas(empresas, choferes, clientes, transfers):
     except Exception as e:
         print(f"Error al crear reservas: {e}")
 
-# Ejecutar la creación de datos de prueba y reservas
 empresas, choferes, clientes, transfers = crear_datos_de_prueba()
 crear_reservas(empresas, choferes, clientes, transfers)
 

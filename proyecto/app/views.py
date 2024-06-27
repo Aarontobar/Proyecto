@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import transfer, Reserva, Cliente
+from .models import transfer, Reserva, Cliente, destinos
 from datetime import datetime
 from django.urls import reverse
 import logging
@@ -24,15 +24,39 @@ def inicio(request):
     return render(request, 'inicio.html', context)
 
 def catalogo(request):
-    transfers = transfer.objects.filter(disponible=True)[:3] 
-    reserva_transfer_id = request.GET.get('reserva_transfer_id', None)
-    return render(request, 'catalogo.html', {'transfers': transfers, 'reserva_transfer_id': reserva_transfer_id})
+    zonas = destinos.objects.values_list('zona', flat=True).distinct()
+    zona = request.GET.get('zona')
+    comuna = request.GET.get('comuna')
+    transfers = transfer.objects.filter(disponible=True)
+    
+    if zona:
+        comunas = destinos.objects.filter(zona=zona).values_list('comuna', flat=True).distinct()
+    else:
+        comunas = []
 
+    if zona and comuna:
+        transfers = transfers.filter(destino__zona=zona, destino__comuna=comuna)
+    elif zona:
+        transfers = transfers.filter(destino__zona=zona)
+
+    transfers = transfers[:3]
+    reserva_transfer_id = request.GET.get('reserva_transfer_id', None)
+    
+    return render(request, 'catalogo.html', {
+        'transfers': transfers,
+        'reserva_transfer_id': reserva_transfer_id,
+        'zonas': zonas,
+        'comunas': comunas,
+        'selected_zona': zona,
+        'selected_comuna': comuna
+    })
 
 def transfers(request):
     marca = request.GET.get('marca', '')
     modelo = request.GET.get('modelo', '')
     capacidad = request.GET.get('capacidad', '')
+    zona = request.GET.get('zona')
+    comuna = request.GET.get('comuna')
 
     transfers = transfer.objects.all()
 
@@ -42,14 +66,28 @@ def transfers(request):
         transfers = transfers.filter(modelo=modelo)
     if capacidad:
         transfers = transfers.filter(capacidad__gte=capacidad)
+    if zona and comuna:
+        transfers = transfers.filter(destino__zona=zona, destino__comuna=comuna)
+    elif zona:
+        transfers = transfers.filter(destino__zona=zona)
 
     marcas = transfer.objects.values_list('marca', flat=True).distinct()
     modelos = transfer.objects.values_list('modelo', flat=True).distinct()
+    zonas = destinos.objects.values_list('zona', flat=True).distinct()
+    
+    if zona:
+        comunas = destinos.objects.filter(zona=zona).values_list('comuna', flat=True).distinct()
+    else:
+        comunas = []
 
     context = {
         'transfers': transfers,
         'marcas': marcas,
         'modelos': modelos,
+        'zonas': zonas,
+        'comunas': comunas,
+        'selected_zona': zona,
+        'selected_comuna': comuna,
     }
 
     return render(request, 'transfers.html', context)
@@ -61,25 +99,27 @@ def procesar_reserva(request):
         rut = request.POST.get('rut')
         correo = request.POST.get('correo')
         telefono = request.POST.get('telefono')
-        fecha = request.POST.get('fecha')
-        hora = request.POST.get('hora')
-        destino = request.POST.get('destino')
         cantidad_asientos = request.POST.get('cantidad_asientos')
 
         cliente, created = Cliente.objects.get_or_create(rut=rut, defaults={'nombre': nombre, 'correo': correo, 'telefono': telefono})
-        transfer_utilizado = transfer.objects.get(patente=transfer_id)
+        transfer_utilizado = transfer.objects.get(patente=transfer_id)  # Asegúrate de usar el modelo correcto para Transfer
+
+        fecha_actual = datetime.now().date()
+        hora_actual = datetime.now().time()
 
         reserva = Reserva.objects.create(
             transfer_utilizado=transfer_utilizado,
             cliente_rut=cliente,
-            fecha_realizacion=datetime.strptime(fecha, '%Y-%m-%d').date(),
-            hora_realizacion=datetime.strptime(hora, '%H:%M').time(),
-            destino=destino,
-            cantidad_asientos=cantidad_asientos
+            fecha_realizacion=fecha_actual,
+            hora_realizacion=hora_actual,
+            cantidad_asientos=cantidad_asientos,
+            zona=transfer_utilizado.destino.zona,
+            comuna=transfer_utilizado.destino.comuna
         )
+
         return redirect('reserva', reserva_id=reserva.id_reserva)
     
-    return render(request, 'error.html')  
+    return render(request, 'error.html')
 
 def reserva(request, reserva_id):
     reserva = get_object_or_404(Reserva, id_reserva=reserva_id)
@@ -98,7 +138,7 @@ def login_user(request):
         if user is not None:
             print("DEBUG: Authentication successful")
             login(request, user)
-            return redirect('administrar') 
+            return redirect('nuevo_transfer') 
         else:
             print("DEBUG: Authentication failed")
             messages.error(request, 'Credenciales inválidas. Por favor, inténtelo de nuevo.')
@@ -106,5 +146,28 @@ def login_user(request):
     return render(request, 'login.html')
 
 @login_required
-def administrar(request):
-    return render(request, 'administrar.html')
+def nuevo_transfer(request):
+    return render(request, 'nuevo-transfer.html')
+
+def transfer_list(request):
+    zona = request.GET.get('zona')
+    comuna = request.GET.get('comuna')
+
+    transfers = transfer.objects.all()
+    if zona:
+        transfers = transfers.filter(zona=zona)
+    if comuna:
+        transfers = transfers.filter(comuna=comuna)
+    zonas = transfer.objects.values_list('zona', flat=True).distinct()
+    comunas = transfer.objects.filter(zona=zona).values_list('comuna', flat=True).distinct() if zona else transfer.objects.values_list('comuna', flat=True).distinct()
+
+    context = {
+        'transfers': transfers,
+        'zonas': zonas,
+        'comunas': comunas,
+        'selected_zona': zona,
+        'selected_comuna': comuna,
+    }
+
+    return render(request, 'transfers/transfer_list.html', context)
+

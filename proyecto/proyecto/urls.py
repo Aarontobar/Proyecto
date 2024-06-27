@@ -28,5 +28,5 @@ urlpatterns = [
     path('procesar_reserva/', views.procesar_reserva, name='procesar_reserva'),
     path('reserva/<int:reserva_id>/', views.reserva, name='reserva'),
     path('login-user/', views.login_user, name='login-user'),
-    path('administrar/', views.administrar, name='administrar')
+    path('nuevo_transfer/', views.nuevo_transfer, name='nuevo_transfer')
 ]

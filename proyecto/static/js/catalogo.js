@@ -35,3 +35,15 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 });
+
+function validarSeleccion() {
+    var zona = document.getElementById('zona').value;
+    var comuna = document.getElementById('comuna').value;
+
+    if (zona === '' || comuna === '') {
+        alert('Selecciona una zona y una comuna para buscar transfers.');
+        return false;
+    }
+
+    return true;
+}

@@ -1,7 +1,11 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import transfer, Reserva, Cliente
 from datetime import datetime
+from django.urls import reverse
+import logging
 
+
+logger = logging.getLogger(__name__)
 # Create your views here.
 def inicio(request):
 
@@ -63,15 +67,17 @@ def procesar_reserva(request):
         transfer_utilizado = transfer.objects.get(patente=transfer_id)
 
         reserva = Reserva.objects.create(
-            transfer_utilizado=transfer_utilizado.patente,
-            cliente_id=cliente.rut,
+            transfer_utilizado=transfer_utilizado,
+            cliente_rut=cliente,
             fecha_realizacion=datetime.strptime(fecha, '%Y-%m-%d').date(),
             hora_realizacion=datetime.strptime(hora, '%H:%M').time(),
             destino=destino,
             cantidad_asientos=cantidad_asientos
         )
-
-        
-        return redirect('confirmacion_reserva') 
-
+        return redirect('reserva', reserva_id=reserva.id_reserva)
+    
     return render(request, 'error.html')  
+
+def reserva(request, reserva_id):
+    reserva = get_object_or_404(Reserva, id_reserva=reserva_id)
+    return render(request, 'reserva.html', {'reserva': reserva})

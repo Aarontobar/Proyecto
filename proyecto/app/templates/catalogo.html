@@ -53,7 +53,7 @@
         </div>
 
         <div id="reservation-form-container" style="display: none;">
-            <form id="reservation-form" action="" method="post" class="reservation-form">
+            <form id="reservation-form" action="{% url 'procesar_reserva' %}" method="post" class="reservation-form">
                 {% csrf_token %}
                 <input type="hidden" name="transfer_id" id="transfer-patente" value="{{ reserva_transfer_id }}">
         

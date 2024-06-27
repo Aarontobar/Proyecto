@@ -1,5 +1,6 @@
-from django.shortcuts import render
-from .models import transfer, Reserva
+from django.shortcuts import render, redirect
+from .models import transfer, Reserva, Cliente
+from datetime import datetime
 
 # Create your views here.
 def inicio(request):
@@ -17,7 +18,8 @@ def inicio(request):
 
 def catalogo(request):
     transfers = transfer.objects.filter(disponible=True)[:3] 
-    return render(request, 'catalogo.html', {'transfers': transfers})
+    reserva_transfer_id = request.GET.get('reserva_transfer_id', None)
+    return render(request, 'catalogo.html', {'transfers': transfers, 'reserva_transfer_id': reserva_transfer_id})
 
 
 def transfers(request):
@@ -33,8 +35,7 @@ def transfers(request):
         transfers = transfers.filter(modelo=modelo)
     if capacidad:
         transfers = transfers.filter(capacidad__gte=capacidad)
-    
-    # Obtener listas de valores únicos para los filtros
+
     marcas = transfer.objects.values_list('marca', flat=True).distinct()
     modelos = transfer.objects.values_list('modelo', flat=True).distinct()
 
@@ -45,3 +46,32 @@ def transfers(request):
     }
 
     return render(request, 'transfers.html', context)
+
+def procesar_reserva(request):
+    if request.method == 'POST':
+        transfer_id = request.POST.get('transfer_id')
+        nombre = request.POST.get('nombre')
+        rut = request.POST.get('rut')
+        correo = request.POST.get('correo')
+        telefono = request.POST.get('telefono')
+        fecha = request.POST.get('fecha')
+        hora = request.POST.get('hora')
+        destino = request.POST.get('destino')
+        cantidad_asientos = request.POST.get('cantidad_asientos')
+
+        cliente, created = Cliente.objects.get_or_create(rut=rut, defaults={'nombre': nombre, 'correo': correo, 'telefono': telefono})
+        transfer_utilizado = transfer.objects.get(patente=transfer_id)
+
+        reserva = Reserva.objects.create(
+            transfer_utilizado=transfer_utilizado.patente,
+            cliente_id=cliente.rut,
+            fecha_realizacion=datetime.strptime(fecha, '%Y-%m-%d').date(),
+            hora_realizacion=datetime.strptime(hora, '%H:%M').time(),
+            destino=destino,
+            cantidad_asientos=cantidad_asientos
+        )
+
+        
+        return redirect('confirmacion_reserva') 
+
+    return render(request, 'error.html')  

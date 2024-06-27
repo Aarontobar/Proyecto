@@ -23,7 +23,6 @@ class EmpresaTransfer(models.Model):
     nombre = models.CharField(max_length=100)
     telefono = models.CharField(max_length=20)
     fecha_agre = models.DateTimeField(default=timezone.now)
-    # Campo para contar la cantidad de transfers asociados a esta empresa
     transfers = models.IntegerField(default=0, editable=False) 
 
     def __str__(self):
@@ -45,8 +44,8 @@ class Chofer(models.Model):
         return f"{self.nombre} {self.apellido} ({self.rut})"
     
 class Cliente(models.Model):
+    rut = models.CharField(max_length=12, primary_key=True)
     nombre = models.CharField(max_length=100)
-    rut = models.CharField(max_length=12, unique=True)
     correo = models.EmailField(max_length=254)
     telefono = models.CharField(max_length=20)
 
@@ -55,15 +54,18 @@ class Cliente(models.Model):
     
 class Reserva(models.Model):
     id_reserva = models.AutoField(primary_key=True)
-    transfer_utilizado = models.ForeignKey(transfer, on_delete=models.CASCADE)
-    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
+    transfer_utilizado = models.ForeignKey(transfer, on_delete=models.CASCADE, null=True, blank=True)
+    cliente_rut = models.ForeignKey(Cliente, on_delete=models.CASCADE, null=True, blank=True)
     fecha_realizacion = models.DateField()
     hora_realizacion = models.TimeField()
     destino = models.CharField(max_length=200)
     cantidad_asientos = models.IntegerField()
 
     def __str__(self):
-        return f"Reserva #{self.id_reserva} - Cliente: {self.cliente.nombre}, Destino: {self.destino}"
+        if self.cliente_rut:
+            return f"Reserva #{self.id_reserva} - Cliente: {self.cliente_rut.nombre}, Destino: {self.destino}"
+        else:
+            return f"Reserva #{self.id_reserva} - Sin cliente, Destino: {self.destino}"
     
 class Usuarios(models.Model):
     ROL_CHOICES = (

@@ -8,12 +8,3 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
-
-document.addEventListener('DOMContentLoaded', function() {
-    var toggleBtn = document.getElementById('toggle-filter-btn');
-    var filterForm = document.getElementById('filter-form');
-
-    toggleBtn.addEventListener('click', function() {
-        filterForm.classList.toggle('hidden');
-    });
-});

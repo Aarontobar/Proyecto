@@ -3,87 +3,141 @@ import django
 from django.utils import timezone
 from faker import Faker
 import random
+from django.db import IntegrityError, transaction
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'proyecto.settings')
+
 django.setup()
 
 # Importa tus modelos de Django después de django.setup()
 from app.models import transfer, EmpresaTransfer, Chofer, Cliente, Reserva, Usuarios
 
+
 fake = Faker()
 
-# Crear empresas de transfer
-empresas = []
-for _ in range(5):
-    empresa = EmpresaTransfer.objects.create(
-        nombre=fake.company()[:50],  # Limitar a 50 caracteres
-        telefono=fake.phone_number()[:20]  # Limitar a 20 caracteres
-    )
-    empresas.append(empresa)
+marcas_reales = ['Toyota', 'Honda', 'Ford', 'Chevrolet', 'Nissan']
+modelos_reales = ['SUV', 'Sedan', 'Minivan']
 
-# Crear choferes
-choferes = []
-for _ in range(10):
-    nombre_chofer = fake.first_name()[:50]  # Limitar a 50 caracteres
-    apellido_chofer = fake.last_name()[:50]  # Limitar a 50 caracteres
-    correo_chofer = f"{nombre_chofer.lower()}.{apellido_chofer.lower()}@example.com"[:150]  # Limitar a 150 caracteres
-    chofer = Chofer.objects.create(
-        rut=fake.unique.uuid4()[:12],  # Limitar a 12 caracteres
-        usuario=fake.user_name()[:150],  # Limitar a 150 caracteres
-        contrasenna=fake.password()[:128],  # Limitar a 128 caracteres
-        nombre=nombre_chofer,
-        apellido=apellido_chofer,
-        telefono=fake.phone_number()[:20],  # Limitar a 20 caracteres
-        correo=correo_chofer,
-        horario_entrada=fake.time(),
-        horario_salida=fake.time()
-    )
-    choferes.append(chofer)
+def crear_datos_de_prueba():
+    # Crear empresas de transfer
+    empresas = []
+    for _ in range(5):
+        empresa = EmpresaTransfer.objects.create(
+            nombre=fake.company()[:50],  # Limitar a 50 caracteres
+            telefono=fake.phone_number()[:20]  # Limitar a 20 caracteres
+        )
+        empresas.append(empresa)
 
-# Crear clientes
-clientes = []
-for _ in range(20):
-    cliente = Cliente.objects.create(
-        nombre=fake.name()[:100],  # Limitar a 100 caracteres
-        rut=fake.unique.uuid4()[:12],  # Limitar a 12 caracteres
-        correo=fake.email()[:254],  # Limitar a 254 caracteres (límite de EmailField)
-        telefono=fake.phone_number()[:20]  # Limitar a 20 caracteres
-    )
-    clientes.append(cliente)
+    # Crear choferes
+    choferes = []
+    for _ in range(10):
+        nombre_chofer = fake.first_name()
+        apellido_chofer = fake.last_name()
+        correo_chofer = f"{nombre_chofer.lower()}.{apellido_chofer.lower()}@example.com"
+        chofer = Chofer.objects.create(
+            rut=str(fake.unique.random_int(min=10000000, max=99999999)) + "-" + fake.random_letter(),
+            usuario=fake.user_name()[:150],
+            contrasenna=fake.password()[:128],
+            nombre=nombre_chofer,
+            apellido=apellido_chofer,
+            telefono=fake.phone_number()[:20],
+            correo=correo_chofer,
+            horario_entrada=fake.time(),
+            horario_salida=fake.time()
+        )
+        choferes.append(chofer)
 
-# Crear transfers
-transfers = []
-for _ in range(25):
-    capacidad = random.randint(4, 10)
-    transferencia = transfer.objects.create(
-        patente=fake.unique.uuid4()[:20],  # Limitar a 20 caracteres
-        marca=fake.company()[:100],  # Limitar a 100 caracteres
-        modelo=fake.random_element(elements=('SUV', 'Sedan', 'Minivan')),
-        capacidad=capacidad,
-        disponible=fake.boolean(),
-        empresa=random.choice(empresas),
-        conductor=random.choice(choferes) if choferes else None
-    )
-    transfers.append(transferencia)
+    # Crear clientes
+    clientes = []
+    for _ in range(20):
+        nombre_cliente = fake.name()
+        cliente = Cliente.objects.create(
+            nombre=nombre_cliente,
+            rut=str(fake.unique.random_int(min=10000000, max=99999999)) + "-" + fake.random_letter(),
+            telefono=fake.phone_number()[:20]
+        )
+        clientes.append(cliente)
 
-# Crear reservas
-for _ in range(50):
-    reserva = Reserva.objects.create(
-        transfer_utilizado=random.choice(transfers),
-        cliente=random.choice(clientes),
-        fecha_realizacion=fake.date_between(start_date='-1y', end_date='today'),
-        hora_realizacion=fake.time(),
-        destino=fake.address()[:200],  # Limitar a 200 caracteres
-        cantidad_asientos=random.randint(1, 10)
-    )
+    # Crear transfers
+    transfers = []
+    for _ in range(25):
+        capacidad = random.randint(4, 10)
+        # Generar una patente única para cada transferencia
+        patente = None
+        while not patente or transfer.objects.filter(patente=patente).exists():
+            patente = fake.random_uppercase_letter() * 4 + str(fake.random_int(min=10, max=99))  # Formato: AAAA99
+        transferencia = transfer.objects.create(
+            patente=patente,
+            marca=random.choice(['Toyota', 'Honda', 'Ford', 'Chevrolet', 'Nissan']),
+            modelo=random.choice(['SUV', 'Sedan', 'Minivan']),
+            capacidad=capacidad,
+            disponible=True,
+            empresa=random.choice(empresas),
+            conductor=random.choice(choferes) if choferes else None
+        )
+        transfers.append(transferencia)
+
+    return empresas, choferes, clientes, transfers
+
+# Función para crear reservas
+def crear_reservas(empresas, choferes, clientes, transfers):
+    # Obtener listas de transfers y clientes
+    transfers = list(transfer.objects.all())
+    clientes = list(Cliente.objects.all())
+
+    try:
+        with transaction.atomic():
+            for _ in range(50):  # Intentaremos crear 50 reservas
+                # Seleccionar aleatoriamente transfer y cliente
+                transfer_utilizado = random.choice(transfers)
+                cliente = random.choice(clientes)
+                
+                # Verificar si el transfer y el cliente existen en la base de datos
+                if not transfer_utilizado.pk or not cliente.pk:
+                    print(f"No se puede crear reserva, transfer o cliente no encontrado en la base de datos.")
+                    continue
+
+                # Verificar si el transfer tiene conductor asignado
+                if not transfer_utilizado.conductor:
+                    print(f"No se puede crear reserva, el transfer {transfer_utilizado.patente} no tiene conductor asignado.")
+                    continue
+
+                try:
+                    # Crear reserva
+                    reserva = Reserva.objects.create(
+                        transfer_utilizado=transfer_utilizado,
+                        cliente_rut=cliente,
+                        fecha_realizacion=fake.date_between(start_date='-1y', end_date='today'),
+                        hora_realizacion=fake.time(),
+                        destino=fake.address()[:200],
+                        cantidad_asientos=random.randint(1, 10)
+                    )
+                    print(f"Reserva creada correctamente: {reserva.id_reserva}")
+
+                except IntegrityError as e:
+                    print(f"Error de integridad al crear reserva: {e}")
+                    print(f"Detalles del transfer: {transfer_utilizado}")
+                    print(f"Detalles del cliente: {cliente}")
+
+    except Exception as e:
+        print(f"Error al crear reservas: {e}")
+
+# Ejecutar la creación de datos de prueba y reservas
+empresas, choferes, clientes, transfers = crear_datos_de_prueba()
+crear_reservas(empresas, choferes, clientes, transfers)
+
+# Agregar mensaje final
+print("Proceso de creación de reservas completado.")
 
 # Crear usuarios
 usuarios = []
 for _ in range(5):
+    nombre_usuario = fake.first_name()
+    apellido_usuario = fake.last_name()
     usuario = Usuarios.objects.create(
-        rut=fake.unique.uuid4()[:12],  # Limitar a 12 caracteres
-        nombre=fake.first_name()[:100],  # Limitar a 100 caracteres
-        apellido=fake.last_name()[:100],  # Limitar a 100 caracteres
+        rut=str(fake.unique.random_int(min=10000000, max=99999999)) + "-" + fake.random_letter(),
+        nombre=nombre_usuario,
+        apellido=apellido_usuario,
         horario_entrada=fake.time(),
         horario_salida=fake.time(),
         rol=random.choice(['admin_aeropuerto', 'admin_empresa_transfer', 'superuser'])

@@ -25,4 +25,5 @@ urlpatterns = [
     path('', views.inicio, name='inicio'),
     path('catalogo/', views.catalogo, name='catalogo'),
     path('transfers/', views.transfers, name='transfers'),
+    path('procesar_reserva/', views.procesar_reserva, name='procesar_reserva'),
 ]

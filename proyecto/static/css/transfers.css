@@ -160,34 +160,19 @@ h1, h3 {
 .transfer-card.expanded .mas_info {
     display: block;
 }
-
-.ver_mas {
-    position:absolute;
-    right: 10px;
-    top: 10px;
-    background-color: rgba(0, 0, 0, 0.379);;
-    color: #fff;
-    padding: 8px 16px;
-    border: none;
-    border-radius: 50px 0px 0px 50px;
-    cursor: pointer;
-    text-decoration: none;
+ 
+.form{
+    background-color: rgba(137, 139, 128, 0.262);;
+    border: 1px solid #000;
+    border-radius: 8px;
 }
 
-.ver_mas span {
-    margin-left: 5px; /* Espacio entre el texto y el ícono */
+.boton{
+    background-color: rgba(137, 139, 128, 0.262);;
+    border: 1px solid #000;
+    border-radius: 4px;
 }
 
-.ver_mas:hover {
-    background-color: rgba(223, 160, 160, 0.262);;
-}
-
-
-/* Estilo para el botón de toggle */
-#toggle-filter-btn {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
+.boton:hover{
+    background-color: rgba(61, 62, 58, 0.262);;
 }

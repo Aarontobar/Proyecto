@@ -29,12 +29,11 @@
     <div class="custom-square">
         <h1>Transfers Disponibles</h1>
 
-        <div class="dropdown">
-            <button class="dropbtn">Filtrar</button>
-            <div class="dropdown-content">
+        <div class="filtrar">
+            <div class="filtrar-content">
                 <form id="filter-form" action="{% url 'transfers' %}" method="GET">
                     <label for="marca">Marca:</label>
-                    <select id="marca" name="marca">
+                    <select id="marca" name="marca" class="form">
                         <option value="">Seleccionar</option>
                         {% for marca in marcas %}
                             <option value="{{ marca }}" {% if request.GET.marca == marca %}selected{% endif %}>{{ marca }}</option>
@@ -42,7 +41,7 @@
                     </select>
 
                     <label for="modelo">Modelo:</label>
-                    <select id="modelo" name="modelo">
+                    <select id="modelo" name="modelo" class="form">
                         <option value="">Seleccionar</option>
                         {% for modelo in modelos %}
                             <option value="{{ modelo }}" {% if request.GET.modelo == modelo %}selected{% endif %}>{{ modelo }}</option>
@@ -50,9 +49,9 @@
                     </select>
 
                     <label for="capacidad">Capacidad mínima:</label>
-                    <input type="number" id="capacidad" name="capacidad" min="1" value="{{ request.GET.capacidad }}">
+                    <input type="number" id="capacidad" name="capacidad" min="1" class="form" value="{{ request.GET.capacidad }}">
 
-                    <button type="submit">Aplicar Filtro</button>
+                    <button type="submit" class="boton">Aplicar Filtro</button>
                 </form>
             </div>
         </div>
@@ -60,7 +59,11 @@
         <div class="transfers-container">
             {% for transfer in transfers %}
             <div class="transfer-card">
-                <img src="{{ transfer.foto.url }}" alt="Foto del Transfer">
+                {% if transfer.foto %}
+                <img src="{{ transfer.foto.url }}" alt="Foto del transfer">
+                {% else %}
+                <p>No hay foto disponible para este transfer.</p>
+                {% endif %}
                 <p>{{ transfer.marca }} {{ transfer.modelo }}</p>
 
                 <div class="mas_info">
@@ -69,7 +72,7 @@
                     <p>Conductor: {{ transfer.conductor }}</p>
                 </div>
 
-                <button class="reservar_btn">Reservar</button>
+                <a href="{% url 'catalogo' %}?reserva_transfer_id={{ transfer.patente }}" class="reservar_btn">Reservar</a>
                 <button class="mas_info_btn">Ver más</button>
             </div>
             {% empty %}

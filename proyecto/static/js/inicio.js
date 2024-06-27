@@ -17,11 +17,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const movedBy = e.clientX - startPosition;
 
         if (movedBy < -100) {
-            // Move to next slide
         } else if (movedBy > 100) {
-            // Move to previous slide
         }
-
         carousel.style.transition = 'transform 0.5s ease';
         carousel.style.transform = `translateX(${currentTranslate}px)`;
     });

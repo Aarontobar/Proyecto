@@ -175,7 +175,7 @@ h1, h3 {
 }
 
 .ver_mas span {
-    margin-left: 5px; /* Espacio entre el texto y el ícono */
+    margin-left: 5px; 
 }
 
 .ver_mas:hover {

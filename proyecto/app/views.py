@@ -98,7 +98,7 @@ def login_user(request):
         if user is not None:
             print("DEBUG: Authentication successful")
             login(request, user)
-            return redirect('administrar')  # Redirige a la página de dashboard o donde sea necesario
+            return redirect('administrar') 
         else:
             print("DEBUG: Authentication failed")
             messages.error(request, 'Credenciales inválidas. Por favor, inténtelo de nuevo.')

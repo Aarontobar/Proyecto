@@ -67,29 +67,29 @@ h1, h3 {
 }
 
 .form-group {
-    margin-bottom: 1rem; /* Espacio entre grupos de campos */
+    margin-bottom: 1rem; 
 }
 
 .form-group label {
-    display: block; /* Mostrar etiquetas como bloques (encima de los inputs) */
-    margin-bottom: 0.5rem; /* Espacio entre etiqueta y campo */
+    display: block; 
+    margin-bottom: 0.5rem; 
 }
 
 .form-control {
-    width: 100%; /* Ancho completo para los inputs */
-    padding: 0.5rem; /* Espaciado interno */
-    font-size: 1rem; /* Tamaño de fuente */
-    background-color: rgba(0, 0, 0, 0.379); /* Color de fondo */
-    border: 1px solid #ccc; /* Borde del input */
-    border-radius: 4px; /* Bordes redondeados */
-    box-sizing: border-box; /* Ajuste del modelo de caja */
+    width: 100%; 
+    padding: 0.5rem; 
+    font-size: 1rem; 
+    background-color: rgba(0, 0, 0, 0.379); 
+    border: 1px solid #ccc; 
+    border-radius: 4px; 
+    box-sizing: border-box; 
 }
 
 .reservation-form {
-    max-width: 800px; /* Ancho máximo del formulario */
-    margin: 0 auto; /* Centrar horizontalmente el formulario */
-    padding: 1.5rem; /* Espaciado interno del formulario */
-    border-radius: 8px; /* Bordes redondeados del formulario */
-    margin-top: 2rem; /* Espacio superior */
-    margin-bottom: 2rem; /* Espacio inferior */
+    max-width: 800px; 
+    margin: 0 auto; 
+    padding: 1.5rem; 
+    border-radius: 8px; 
+    margin-top: 2rem; 
+    margin-bottom: 2rem; 
 }

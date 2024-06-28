@@ -1,0 +1,59 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/reserva.css' %}">
+</head>
+<body>
+    <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img src="{% static 'img/slide1.jpg' %}" class="d-block w-100" alt="...">
+            </div>
+            <div class="carousel-item">
+                <img src="{% static 'img/slide2.jpg' %}" class="d-block w-100" alt="...">
+            </div>
+            <div class="carousel-item">
+                <img src="{% static 'img/slide3.jpg' %}" class="d-block w-100" alt="...">
+            </div>
+        </div>
+    </div>
+
+    <div class="custom-square">
+        <h1>Detalles de la Reserva</h1>
+
+        <div class="transfer-details">
+            <p><strong>Patente: </strong> {{ transfer.patente }}</p>
+            <p><strong>Marca: </strong> {{ transfer.marca }}</p>
+            <p><strong>Modelo: </strong> {{ transfer.modelo }}</p>
+            <p><strong>Capacidad: </strong> {{ transfer.capacidad }}</p>
+            <p><strong>Disponibilidad: </strong> {{ transfer.disponibilidad }}</p>
+            <p><strong>Empresa: </strong> {{ transfer.empresa }}</p>
+            <p><strong>Conductor: </strong> {{ transfer.conductor }}</p>
+            <p><strong>Destino: </strong>{{ transfer.destino }} {{chofer_del_transfer.apellido}}</p>
+
+            {% if transfer.foto %}
+                <img src="{{ transfer.foto.url }}" alt="Foto de Transfer">
+            {% else %}
+                <p>No hay foto disponible para este transfer.</p>
+            {% endif %}
+        </div>
+
+        <div class="row justify-content-center mt-3 mb-5">
+            <div class="col-lg-6 col-12">
+                <a href="{% url 'inicio' %}" class="btn btn-custom btn-lg btn-block">volver</a>
+            </div>
+        </div>
+    </div>
+    
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'js/catalogo.js' %}"></script>
+</body>
+</html>

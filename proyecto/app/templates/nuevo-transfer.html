@@ -28,47 +28,28 @@
 
     <div class="custom-square">
         <h1>Nuevo Transfer</h1>
-        
-        <div class="transfers-container">
-            {% for transfer in transfers %}
-            <div class="transfer-card">
-                {% if transfer.foto %}
-                <img src="{{ transfer.foto.url }}" alt="Foto del transfer">
-                {% else %}
-                <p>No hay foto disponible para este transfer.</p>
-                {% endif %}
-                <p>{{ transfer.marca }} {{ transfer.modelo }}</p>
 
-                <div class="mas_info">
-                    <p>Capacidad: {{ transfer.capacidad }}</p>
-                    <p>Empresa: {{ transfer.empresa }}</p>
-                    <p>Conductor: {{ transfer.conductor }}</p>
-                </div>
-
-                <button class="reservar_btn" onclick="showReservationForm(event, '{{ transfer.patente}}')">Reservar</button>
-                <button class="mas_info_btn">Ver más</button>
-            </div>
-            {% endfor %}
-            <a href="{% url 'transfers' %}" class="ver_mas"><samp>+</samp></a>
-        </div>
-
-        <div id="reservation-form-container" style="display: none;">
-            <form id="reservation-form" action="{% url 'procesar_reserva' %}" method="post" class="reservation-form">
+        <div id="reservation-form-container" >
+            <form id="reservation-form" action="{% url 'guardar_transfer' %}" method="post" enctype="multipart/form-data" class="reservation-form">
                 <p>ingrese su informacion para completar la reserva</p>
                 {% csrf_token %}
-                <input type="hidden" name="transfer_id" id="transfer-patente" value="{{ reserva_transfer_id }}">
                 
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="nombre">Nombre:</label>
-                            <input type="text" id="nombre" name="nombre" class="form-control form-control-sm" required>
+                            <label for="Patente">Patente:</label>
+                            <input type="text" id="patente" name="patente" class="form-control form-control-sm" required>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="rut">RUT:</label>
-                            <input type="text" id="rut" name="rut" class="form-control form-control-sm" required>
+                            <label for="marca">Marca:</label>
+                            <select name="marca" id="marca" class="form-control form-control-sm">
+                            <option value="" class="form-control form-control-sm">Seleccione Marca</option>
+                                {% for marca in marcas %}
+                                    <option value="{{ marca }}">{{ marca }}</option>
+                                {% endfor %}
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -76,46 +57,74 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="correo">Correo:</label>
-                            <input type="email" id="correo" name="correo" class="form-control form-control-sm" required>
+                            <label for="modelo">Modelo:</label>
+                            <select name="modelo" id="modelo" class="form-control form-control-sm">
+                            <option value="" class="form-control form-control-sm">Seleccione Modelo</option>
+                                {% for modelo in modelos %}
+                                    <option value="{{ modelo }}">{{ modelo }}</option>
+                                {% endfor %}
+                            </select>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="telefono">Teléfono:</label>
-                            <input type="text" id="telefono" name="telefono" class="form-control form-control-sm" required>
+                            <label for="capacidad">capacidad:</label>
+                            <input type="number" id="capacidad" name="capacidad" class="form-control form-control-sm" required>
                         </div>
                     </div>
                 </div>
-        
+
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="fecha">Fecha de Reserva:</label>
-                            <input type="date" id="fecha" name="fecha" class="form-control form-control-sm" required>
+                            <label for="disponibilidad">Disponibilidad:</label>
+                            <select name="disponibilidad" id="disponibilidad" class="form-control">
+                                <option value="True">Disponible</option>
+                                <option value="False">No Disponible</option>
+                            </select>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="hora">Hora de Reserva:</label>
-                            <input type="time" id="hora" name="hora" class="form-control form-control-sm" required>
+                            <label for="empresa_id">Empresa:</label>
+                            <select name="empresa_id" id="empresa_id" class="form-control">
+                                <option value="" disabled selected>Seleccione Empresa</option>
+                                {% for empresa in empresas %}
+                                    <option value="{{ empresa.nombre }}">{{ empresa }}</option>
+                                {% endfor %}
+                            </select>
                         </div>
                     </div>
                 </div>
-        
+
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="destino">Destino:</label>
-                            <input type="text" id="destino" name="destino" class="form-control form-control-sm" required>
+                            <label for="conductor_id">Conductor:</label>
+                            <select name="conductor_id" id="conductor_id" class="form-control">
+                                <option value="" disabled selected>Seleccione Conductor</option>
+                                {% for conductor in conductores %}
+                                    <option value="{{ conductor.rut }}">{{ conductor }}</option>
+                                {% endfor %}
+                            </select>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="cantidad_asientos">Cantidad de Asientos:</label>
-                            <input type="number" id="cantidad_asientos" name="cantidad_asientos" class="form-control form-control-sm" required>
+                            <label for="destino_id">Destino:</label>
+                            <select name="destino_id" id="destino_id" class="form-control">
+                                <option value="" disabled selected>Seleccione destino</option>
+                                {% for dest in destino %}
+                                    <option value="{{ dest.comuna }}">{{ dest }}</option>
+                                {% endfor %}
+                            </select>
                         </div>
                     </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="foto">Foto:</label>
+                    <input type="file" id="foto" name="foto" class="form-control-file">
                 </div>
 
                 
@@ -126,6 +135,5 @@
     </div>
     
     <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
-    <script src="{% static 'js/catalogo.js' %}"></script>
 </body>
 </html>

@@ -1,11 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import transfer, Reserva, Cliente, destinos
+from .models import transfer, Reserva, Cliente, destinos, EmpresaTransfer, Chofer
 from datetime import datetime
 from django.urls import reverse
 import logging
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.db import IntegrityError
 
 
 logger = logging.getLogger(__name__)
@@ -102,7 +103,7 @@ def procesar_reserva(request):
         cantidad_asientos = request.POST.get('cantidad_asientos')
 
         cliente, created = Cliente.objects.get_or_create(rut=rut, defaults={'nombre': nombre, 'correo': correo, 'telefono': telefono})
-        transfer_utilizado = transfer.objects.get(patente=transfer_id)  # Asegúrate de usar el modelo correcto para Transfer
+        transfer_utilizado = transfer.objects.get(patente=transfer_id) 
 
         fecha_actual = datetime.now().date()
         hora_actual = datetime.now().time()
@@ -147,27 +148,61 @@ def login_user(request):
 
 @login_required
 def nuevo_transfer(request):
-    return render(request, 'nuevo-transfer.html')
-
-def transfer_list(request):
-    zona = request.GET.get('zona')
-    comuna = request.GET.get('comuna')
-
-    transfers = transfer.objects.all()
-    if zona:
-        transfers = transfers.filter(zona=zona)
-    if comuna:
-        transfers = transfers.filter(comuna=comuna)
-    zonas = transfer.objects.values_list('zona', flat=True).distinct()
-    comunas = transfer.objects.filter(zona=zona).values_list('comuna', flat=True).distinct() if zona else transfer.objects.values_list('comuna', flat=True).distinct()
+   
+    marcas = transfer.objects.order_by().values_list('marca', flat=True).distinct()
+    modelo = transfer.objects.order_by().values_list('modelo', flat=True).distinct()
+    empresas = EmpresaTransfer.objects.all()
+    conductores = Chofer.objects.all()
+    destino = destinos.objects.all()
 
     context = {
-        'transfers': transfers,
-        'zonas': zonas,
-        'comunas': comunas,
-        'selected_zona': zona,
-        'selected_comuna': comuna,
+        'marcas': marcas,
+        'modelos': modelo,
+        'empresas': empresas,
+        'conductores': conductores,
+        'destino': destino,
     }
+    return render(request, 'nuevo-transfer.html', context)
 
-    return render(request, 'transfers/transfer_list.html', context)
+def guardar_transfer(request):
+    if request.method == 'POST':
+        patente = request.POST.get('patente')
+        marca = request.POST.get('marca')
+        modelo = request.POST.get('modelo')
+        capacidad = request.POST.get('capacidad')
+        disponibilidad = request.POST.get('disponibilidad') == 'on'
+        empresa_id = request.POST.get('empresa_id')
+        conductor_id = request.POST.get('conductor_id') 
+        destino_id = request.POST.get('destino_id')
+        imagen = request.FILES.get('foto')
 
+        print(request.FILES)
+
+        empresa = EmpresaTransfer.objects.get(nombre = empresa_id)
+        chofer = Chofer.objects.get(rut = conductor_id)
+        destino = destinos.objects.get(comuna = destino_id)
+
+        try:
+            nuevo_transfer = transfer.objects.create(
+                patente=patente,
+                marca=marca,
+                modelo=modelo,
+                capacidad=capacidad,
+                disponible=disponibilidad,
+                empresa=empresa,
+                conductor=chofer,
+                destino=destino,
+                foto = imagen
+            )
+            return redirect('nuevo', id_transfer=nuevo_transfer.patente)
+
+        except IntegrityError:
+            messages.error(request, f'La patente {patente} ya existe. Intente con una patente diferente.')
+            return redirect('nuevo_transfer')
+    
+    return render(request, 'error.html') 
+
+
+def nuevo(request, id_transfer):
+    transfe = get_object_or_404(transfer, patente=id_transfer)
+    return render(request, 'nuevo.html', {'transfer': transfe})

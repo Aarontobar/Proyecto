@@ -29,7 +29,7 @@
     <div class="custom-square">
         <h1>Transfers Disponibles</h1>
 
-        <form method="get">
+        <form method="get" id="destinos">
             <label for="zona">Zona:</label>
             <select name="zona" id="zona" onchange="this.form.submit()">
                 <option value="">Selecciona una zona</option>
@@ -48,7 +48,7 @@
         
         </form>
         
-        <div class="transfers-container">
+        <div class="transfers-container" id="transfers" style="display: none">
             {% for transfer in transfers %}
             <div class="transfer-card">
                 {% if transfer.foto %}
@@ -65,7 +65,7 @@
                     <p>Conductor: {{ transfer.conductor }}</p>
                 </div>
 
-                <button class="reservar_btn" onclick="showReservationForm(event, '{{ transfer.patente}}')">Reservar</button>
+                <button class="reservar_btn" onclick="showReservationForm(event, '{{ transfer.patente}}', '{{ transfer.capacidad}}')">Reservar</button>
                 <button class="mas_info_btn">Ver más</button>
             </div>
             {% endfor %}
@@ -111,7 +111,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="cantidad_asientos">Cantidad de Asientos:</label>
-                            <input type="number" id="cantidad_asientos" name="cantidad_asientos" class="form-control form-control-sm" required>
+                            <input type="number" id="cantidad_asientos" name="cantidad_asientos" min="1" class="form-control form-control-sm" required>
                         </div>
                     </div>
                 </div>

@@ -88,7 +88,7 @@
                     <p>Conductor: {{ transfer.conductor }}</p>
                 </div>
 
-                <a href="{% url 'catalogo' %}?reserva_transfer_id={{ transfer.patente }}" class="reservar_btn">Reservar</a>
+                <a href="{% url 'catalogo' %}?reserva_transfer_id={{ transfer.patente }}&capacidad={{ transfer.capacidad }}" class="reservar_btn">Reservar</a>
                 <button class="mas_info_btn">Ver más</button>
             </div>
             {% empty %}

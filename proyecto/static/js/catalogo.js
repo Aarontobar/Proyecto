@@ -9,41 +9,52 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-function showReservationForm(event, transferPatente) {
+function showReservationForm(event, transferPatente, capacidad) {
     event.preventDefault();
     var formContainer = document.getElementById('reservation-form-container');
     var form = document.getElementById('reservation-form');
+    var capacidades = document.getElementById('cantidad_asientos');
     console.log('Formulario de reserva mostrado para el transfer ID:', transferPatente);
     var patenteField = document.getElementById('transfer-patente');
     
     patenteField.value = transferPatente; 
     formContainer.style.display = 'block'; 
     formContainer.scrollIntoView({ behavior: 'smooth' }); 
+    capacidades.setAttribute('max', capacidad);
 }
 
 document.addEventListener('DOMContentLoaded', function() {
     const urlParams = new URLSearchParams(window.location.search);
     const reservaTransferId = urlParams.get('reserva_transfer_id');
+    const capacidad = urlParams.get('capacidad')
+    
     if (reservaTransferId) {
         const formContainer = document.getElementById('reservation-form-container');
         console.log('Formulario', reservaTransferId);
+        var capacidades = document.getElementById('cantidad_asientos');
         if (formContainer) {
             formContainer.style.display = 'block';
             formContainer.scrollIntoView({ behavior: 'smooth' });
+            capacidades.setAttribute('max', capacidad);
 
             console.log('Formulario de reserva mostrado para el transfer ID:', reservaTransferId);
         }
     }
 });
 
-function validarSeleccion() {
-    var zona = document.getElementById('zona').value;
-    var comuna = document.getElementById('comuna').value;
 
-    if (zona === '' || comuna === '') {
-        alert('Selecciona una zona y una comuna para buscar transfers.');
-        return false;
+document.addEventListener('DOMContentLoaded', function() {
+    const zonaSelect = document.getElementById('zona');
+    const comunaSelect = document.getElementById('comuna');
+    const transfersContainer = document.getElementById('transfers');
+
+    function checkSelections() {
+        if (zonaSelect.value || comunaSelect.value) {
+            transfersContainer.style.display = '';
+        } else {
+            transfersContainer.style.display = 'none';
+        }
     }
 
-    return true;
-}
+    checkSelections();
+});

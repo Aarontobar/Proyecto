@@ -30,5 +30,5 @@ urlpatterns = [
     path('login-user/', views.login_user, name='login-user'),
     path('nuevo_transfer/', views.nuevo_transfer, name='nuevo_transfer'),
     path('guardar_transfer', views.guardar_transfer, name='guardar_transfer'),
-    path('nuevo/<int:id_transfer>/', views.nuevo, name='nuevo'),
+    path('nuevo/<str:id_transfer>/', views.nuevo, name='nuevo'),
 ]
